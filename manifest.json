@@ -1,0 +1,14 @@
+{
+  "name": "Cerámicas Creare · Experiencias",
+  "short_name": "Creare",
+  "description": "Experiencias en cerámica en El Carmen de Viboral. Reserva por WhatsApp.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fbf8f2",
+  "theme_color": "#0d2b55",
+  "lang": "es",
+  "icons": [
+    {"src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
