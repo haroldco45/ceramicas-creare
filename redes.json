@@ -1,6 +1,11 @@
 {
-  "actualizado": null,
-  "estado": {},
-  "instagram": { "posts": [] },
+  "actualizado": "2026-11-16T15:05:15.770Z",
+  "estado": {
+    "instagram": "sin cambios: falta el permiso de Creare (IG_TOKEN / IG_USER_ID)",
+    "web": "ok"
+  },
+  "instagram": {
+    "posts": []
+  },
   "web": []
 }
