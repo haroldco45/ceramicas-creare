@@ -144,6 +144,17 @@ textarea{min-height:70px;resize:vertical}
 .fact b{display:block;font:700 24px Fraunces,Georgia,serif;color:var(--azul)}
 .fact span{font-size:12px;color:var(--gris)}
 
+
+/* como llegar */
+.map{border-radius:22px;overflow:hidden;box-shadow:0 14px 34px rgba(13,43,85,.15);margin-top:22px;position:relative;background:#dfe7f3}
+.map iframe{width:100%;height:380px;border:0;display:block}
+.places{display:grid;gap:12px;margin-top:16px}
+@media(min-width:760px){.places{grid-template-columns:1fr 1fr}}
+.place{background:#fff;border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(13,43,85,.07);border-top:5px solid var(--azul2);cursor:pointer;transition:transform .2s}
+.place.on{border-top-color:var(--barro);transform:translateY(-3px)}
+.place h4{color:var(--azul);font-size:18px}.place p{color:var(--gris);font-size:14px;margin:4px 0 12px}
+.place .row{display:flex;gap:8px;flex-wrap:wrap}.place .btn{padding:11px 16px;font-size:14px}
+.btn.wz{background:#33ccff;color:#062a3a}
 footer{background:var(--azul);color:#c9d8f2;text-align:center;padding:34px 20px 100px;font-size:14px}
 footer a{color:#fff;font-weight:600}
 .fab{position:fixed;right:16px;bottom:16px;z-index:60;padding:14px 18px;border-radius:40px;animation:pulse 2.4s infinite}
@@ -167,6 +178,7 @@ footer a{color:#fff;font-weight:600}
     <div class="cta">
       <a class="btn wa" href="#reservar"><span class="wa-dot"></span><span data-t="b1">Reservar ahora</span></a>
       <a class="btn lt" href="#experiencias" data-t="b2">Ver experiencias</a>
+      <a class="btn lt" href="#llegar" data-t="b4">Cómo llegar</a>
     </div>
   </div>
 </section>
@@ -221,6 +233,25 @@ footer a{color:#fff;font-weight:600}
   <p class="note"><span data-t="tn">Consulta el texto completo en el catálogo de WhatsApp de Creare:</span> <a href="https://wa.me/p/27155546724105395/573009464616" target="_blank" rel="noopener" data-t="tl">ver términos</a></p>
 </section>
 
+<section id="llegar">
+  <span class="kicker" data-t="k6">Ubicación</span>
+  <h2 class="sec-t" data-t="t6">Cómo llegar</h2>
+  <p class="sec-p" data-t="p6">La finca Creare queda en el sector Jardines de Campo Alegre, El Carmen de Viboral. Toca un lugar para verlo en el mapa y abre la ruta desde donde estés.</p>
+  <div class="map"><iframe id="mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa Cerámicas Creare" src="https://maps.google.com/maps?q=6.0711966,-75.3297416&z=15&output=embed"></iframe></div>
+  <div class="places">
+    <div class="place on" data-ll="6.0711966,-75.3297416">
+      <h4 data-t="pl1">Finca Creare · experiencias</h4>
+      <p data-t="pd1">Jardines de Campo Alegre, El Carmen de Viboral. Aquí se hacen el tour, la pintura y el moldeado.</p>
+      <div class="row"><a class="btn az" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=6.0711966,-75.3297416&destination_place_id=ChIJK7uZYQCjRo4R92zgDqKoXho" data-t="gm">Ruta en Google Maps</a><a class="btn wz" target="_blank" rel="noopener" href="https://waze.com/ul?ll=6.0711966,-75.3297416&navigate=yes" data-t="wz">Ir con Waze</a></div>
+    </div>
+    <div class="place" data-ll="6.0815447,-75.3348219">
+      <h4 data-t="pl2">Tienda Creare · Paseo del Ángel</h4>
+      <p data-t="pd2">Calle de las sombrillas, en el centro del pueblo. Para ver piezas y preguntar por las experiencias.</p>
+      <div class="row"><a class="btn az" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=6.0815447,-75.3348219&destination_place_id=ChIJYRKgKgCjRo4ReKB7SA4cLz0" data-t="gm">Ruta en Google Maps</a><a class="btn wz" target="_blank" rel="noopener" href="https://waze.com/ul?ll=6.0815447,-75.3348219&navigate=yes" data-t="wz">Ir con Waze</a></div>
+    </div>
+  </div>
+</section>
+
 <section id="origen">
   <div class="origin">
     <img src="img/equipo-entrada.jpg" alt="Cerámicas Creare">
@@ -268,10 +299,10 @@ const TERMS={
  en:[['Deposit to book','Check availability and pay a deposit to hold your spot.'],['Group size','Minimum 2 and maximum 35 people per experience.'],['Children','Children aged 4 and up pay for the experience.'],['Individual experience','Each experience is per person and cannot be shared.'],['Changes & cancellations','The deposit is non-refundable. If you cancel in advance you can use it on another date, subject to availability.'],['Entering the farm','Everyone entering the farm must be included in the booking.']]
 };
 const T={
- es:{chip:'El Carmen de Viboral · Antioquia',h1:'Ven a vivir el arte de la cerámica',hp:'Pinta tus propias piezas, toca el barro y moldea con tus manos en la finca Creare, en la cuna de la cerámica de Colombia.',b1:'Reservar ahora',b2:'Ver experiencias',k1:'4 experiencias',t1:'Elige cómo quieres crear',p1:'Desde solo pintar hasta la experiencia completa con tour, pintura y moldeado en arcilla. Precios por persona.',k2:'La finca',t2:'Así se vive Creare',g1:'Los corredores de la finca',g2:'Te esperamos en la entrada',g3:'Bienvenida a El Carmen',g4:'Celebraciones y cumpleaños',g5:'Piezas listas para pintar',g6:'Patio y jardín',g7:'Grupos y familias',k3:'Reserva',t3:'Arma tu reserva y envíala por WhatsApp',p3:'Llena los datos, mira el total al instante y te llega listo el mensaje para que Creare confirme la disponibilidad.',lx:'Experiencia',ln:'Nombre y apellido',lf:'Fecha de interés',lh:'Horario',lp:'Número de personas',lo:'Ocasión especial (cumpleaños, aniversario…)',tt:'Total estimado',send:'Enviar reserva por WhatsApp',k4:'Antes de ir',t4:'Términos y condiciones',tn:'Consulta el texto completo en el catálogo de WhatsApp de Creare:',tl:'ver términos',k5:'Tradición',t5:'En la cuna de la cerámica',p5:'La cerámica decorada a mano bajo esmalte de El Carmen de Viboral es Patrimonio Cultural Inmaterial de Colombia. En Creare la vives con tus propias manos: del barro a tu pieza pintada.',f1:'experiencias',f2:'personas por grupo',f3:'la más completa',b3:'Escribir a Creare',ft:'App hecha por',cl:'Cerrar',
+ es:{chip:'El Carmen de Viboral · Antioquia',h1:'Ven a vivir el arte de la cerámica',hp:'Pinta tus propias piezas, toca el barro y moldea con tus manos en la finca Creare, en la cuna de la cerámica de Colombia.',b1:'Reservar ahora',b2:'Ver experiencias',b4:'Cómo llegar',k1:'4 experiencias',t1:'Elige cómo quieres crear',p1:'Desde solo pintar hasta la experiencia completa con tour, pintura y moldeado en arcilla. Precios por persona.',k2:'La finca',t2:'Así se vive Creare',g1:'Los corredores de la finca',g2:'Te esperamos en la entrada',g3:'Bienvenida a El Carmen',g4:'Celebraciones y cumpleaños',g5:'Piezas listas para pintar',g6:'Patio y jardín',g7:'Grupos y familias',k3:'Reserva',t3:'Arma tu reserva y envíala por WhatsApp',p3:'Llena los datos, mira el total al instante y te llega listo el mensaje para que Creare confirme la disponibilidad.',lx:'Experiencia',ln:'Nombre y apellido',lf:'Fecha de interés',lh:'Horario',lp:'Número de personas',lo:'Ocasión especial (cumpleaños, aniversario…)',tt:'Total estimado',send:'Enviar reserva por WhatsApp',k4:'Antes de ir',t4:'Términos y condiciones',tn:'Consulta el texto completo en el catálogo de WhatsApp de Creare:',tl:'ver términos',k5:'Tradición',t5:'En la cuna de la cerámica',p5:'La cerámica decorada a mano bajo esmalte de El Carmen de Viboral es Patrimonio Cultural Inmaterial de Colombia. En Creare la vives con tus propias manos: del barro a tu pieza pintada.',f1:'experiencias',f2:'personas por grupo',f3:'la más completa',b3:'Escribir a Creare',ft:'App hecha por',cl:'Cerrar',k6:'Ubicación',t6:'Cómo llegar',p6:'La finca Creare queda en el sector Jardines de Campo Alegre, El Carmen de Viboral. Toca un lugar para verlo en el mapa y abre la ruta desde donde estés.',pl1:'Finca Creare · experiencias',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. Aquí se hacen el tour, la pintura y el moldeado.',pl2:'Tienda Creare · Paseo del Ángel',pd2:'Calle de las sombrillas, en el centro del pueblo. Para ver piezas y preguntar por las experiencias.',gm:'Ruta en Google Maps',wz:'Ir con Waze',
   per:'por persona',hrs:'horas',pick:'Elegir',best:'Más completa',exp:'Experiencia',min:'Mínimo 2 y máximo 35 personas.',nodate:'Elige una fecha que no haya pasado.',pp:'personas',hora:'Hora de Colombia: ',
   rib:['<b>Exp. 1</b> $85.000 · pinta 2 piezas','<b>Exp. 2</b> $95.000 · tour + 1 pieza','<b>Exp. 3</b> $105.000 · tour + 2 piezas','<b>Exp. 4</b> $125.000 · tour, pintura y arcilla','Grupos de 2 a 35 personas','Cumpleaños y aniversarios']},
- en:{chip:'El Carmen de Viboral · Colombia',h1:'Come live the art of ceramics',hp:'Paint your own pieces, feel the clay and shape it with your hands at Finca Creare, in the cradle of Colombian ceramics.',b1:'Book now',b2:'See experiences',k1:'4 experiences',t1:'Choose how you want to create',p1:'From painting only to the full experience with tour, painting and clay shaping. Prices per person (COP).',k2:'The farm',t2:'This is Creare',g1:'The farm corridors',g2:'We welcome you at the entrance',g3:'Welcome to El Carmen',g4:'Celebrations & birthdays',g5:'Pieces ready to paint',g6:'Patio & garden',g7:'Groups & families',k3:'Booking',t3:'Build your booking and send it on WhatsApp',p3:'Fill in the details, see the total instantly and get a ready-made message so Creare can confirm availability.',lx:'Experience',ln:'Full name',lf:'Preferred date',lh:'Time slot',lp:'Number of people',lo:'Special occasion (birthday, anniversary…)',tt:'Estimated total (COP)',send:'Send booking via WhatsApp',k4:'Before you go',t4:'Terms & conditions',tn:'See the full text in Creare’s WhatsApp catalog:',tl:'view terms',k5:'Tradition',t5:'In the cradle of ceramics',p5:'Hand-decorated underglaze ceramics from El Carmen de Viboral are part of Colombia’s Intangible Cultural Heritage. At Creare you live it with your own hands: from clay to your painted piece.',f1:'experiences',f2:'people per group',f3:'longest option',b3:'Message Creare',ft:'App by',cl:'Close',
+ en:{chip:'El Carmen de Viboral · Colombia',h1:'Come live the art of ceramics',hp:'Paint your own pieces, feel the clay and shape it with your hands at Finca Creare, in the cradle of Colombian ceramics.',b1:'Book now',b2:'See experiences',b4:'How to get there',k1:'4 experiences',t1:'Choose how you want to create',p1:'From painting only to the full experience with tour, painting and clay shaping. Prices per person (COP).',k2:'The farm',t2:'This is Creare',g1:'The farm corridors',g2:'We welcome you at the entrance',g3:'Welcome to El Carmen',g4:'Celebrations & birthdays',g5:'Pieces ready to paint',g6:'Patio & garden',g7:'Groups & families',k3:'Booking',t3:'Build your booking and send it on WhatsApp',p3:'Fill in the details, see the total instantly and get a ready-made message so Creare can confirm availability.',lx:'Experience',ln:'Full name',lf:'Preferred date',lh:'Time slot',lp:'Number of people',lo:'Special occasion (birthday, anniversary…)',tt:'Estimated total (COP)',send:'Send booking via WhatsApp',k4:'Before you go',t4:'Terms & conditions',tn:'See the full text in Creare’s WhatsApp catalog:',tl:'view terms',k5:'Tradition',t5:'In the cradle of ceramics',p5:'Hand-decorated underglaze ceramics from El Carmen de Viboral are part of Colombia’s Intangible Cultural Heritage. At Creare you live it with your own hands: from clay to your painted piece.',f1:'experiences',f2:'people per group',f3:'longest option',b3:'Message Creare',ft:'App by',cl:'Close',k6:'Location',t6:'How to get there',p6:'Finca Creare is in the Jardines de Campo Alegre area of El Carmen de Viboral. Tap a place to see it on the map and open directions from wherever you are.',pl1:'Finca Creare · experiences',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. The tour, painting and clay shaping happen here.',pl2:'Creare shop · Paseo del Ángel',pd2:'Calle de las sombrillas, in the town centre. See pieces and ask about the experiences.',gm:'Directions in Google Maps',wz:'Go with Waze',
   per:'per person',hrs:'hours',pick:'Choose',best:'Most complete',exp:'Experience',min:'Minimum 2 and maximum 35 people.',nodate:'Pick a date that hasn’t passed.',pp:'people',hora:'Colombia time: ',
   rib:['<b>Exp. 1</b> COP 85,000 · paint 2 pieces','<b>Exp. 2</b> COP 95,000 · tour + 1 piece','<b>Exp. 3</b> COP 105,000 · tour + 2 pieces','<b>Exp. 4</b> COP 125,000 · tour, paint & clay','Groups of 2 to 35','Birthdays & anniversaries']}
 };
@@ -339,6 +370,7 @@ $('#pers').addEventListener('input',calc);
 $('#fec').min=hoyCO();
 addEventListener('scroll',()=>$('#top').classList.toggle('solid',scrollY>60),{passive:true});
 document.querySelectorAll('.gal figure').forEach(f=>f.onclick=()=>{$('#lbi').src=f.querySelector('img').src;$('#lb').classList.add('on')});
+document.querySelectorAll('.place').forEach(pl=>pl.addEventListener('click',e=>{if(e.target.closest('a'))return;document.querySelectorAll('.place').forEach(x=>x.classList.remove('on'));pl.classList.add('on');$('#mapa').src='https://maps.google.com/maps?q='+pl.dataset.ll+'&z=16&output=embed'}));
 render(); reloj(); setInterval(reloj,30000);
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
