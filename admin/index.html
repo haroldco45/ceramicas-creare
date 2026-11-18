@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel Creare · Reservas y contenido</title>
+<meta name="theme-color" content="#0d2b55">
+<link rel="icon" href="/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--azul:#0d2b55;--azul2:#1c4f9c;--cielo:#e8f0fb;--loza:#fbf8f2;--barro:#b86b3c;--tinta:#1a2233;--gris:#5b6578;--ok:#1b8a4b;--mal:#c0392b;--amb:#c98a12}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:Outfit,system-ui,sans-serif;background:var(--loza);color:var(--tinta);min-height:100vh}
+h1,h2,h3{font-family:Fraunces,Georgia,serif}
+button,input,select{font:inherit}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer;transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.az{background:var(--azul);color:#fff}.lt{background:var(--cielo);color:var(--azul)}
+.okb{background:var(--ok);color:#fff}.malb{background:#fdecea;color:var(--mal)}.wa{background:#25d366;color:#08311a}
+input,select{width:100%;border:2px solid #dde5f0;border-radius:12px;padding:11px 12px;background:#fff}
+input:focus,select:focus{outline:0;border-color:var(--azul2)}
+label{font-size:13px;font-weight:600;color:var(--gris);display:block;margin:10px 0 5px}
+
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(180deg,rgba(13,43,85,.55),rgba(13,43,85,.9)),url(/img/finca-izq.jpg) center/cover}
+.lbox{background:#fff;border-radius:24px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:up .5s both}
+.lbox img{width:70px;height:70px;border-radius:50%;display:block;margin:0 auto 10px}
+.lbox h1{text-align:center;color:var(--azul);font-size:26px}.lbox p{text-align:center;color:var(--gris);font-size:14px;margin:4px 0 14px}
+.err{color:var(--mal);font-size:14px;min-height:20px;margin-top:8px}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* app */
+header{position:sticky;top:0;z-index:20;background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+header b{font-size:17px}header small{display:block;font-size:12px;opacity:.8}
+.rol{background:var(--barro);font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:#fff;position:sticky;top:58px;z-index:19;box-shadow:0 4px 12px rgba(13,43,85,.06);scrollbar-width:none}
+nav button{flex:0 0 auto;border:0;background:var(--cielo);color:var(--azul);padding:9px 14px;border-radius:30px;font-weight:600;cursor:pointer}
+nav button.on{background:var(--azul);color:#fff}
+main{max-width:900px;margin:0 auto;padding:16px}
+.tab{display:none;animation:up .35s both}.tab.on{display:block}
+.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(13,43,85,.07);margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:#fff;border-radius:16px;padding:12px;text-align:center;box-shadow:0 6px 18px rgba(13,43,85,.07)}
+.stat b{display:block;font:700 26px Fraunces,Georgia,serif;color:var(--azul)}.stat small{color:var(--gris);font-size:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.row>*{flex:1;min-width:130px}
+.dia{font:700 18px Fraunces,Georgia,serif;color:var(--azul);margin:18px 0 8px}
+.res{border-left:5px solid var(--amb)}.res.confirmada{border-left-color:var(--ok)}.res.cancelada{border-left-color:#bbb;opacity:.65}.res.asistio{border-left-color:var(--azul2)}
+.res .top{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.res h3{font-size:18px}.res .cod{font-size:12px;color:var(--gris);font-weight:600;letter-spacing:1px}
+.chip{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.chip.pendiente{background:#fff4dc;color:var(--amb)}.chip.confirmada{background:#e3f6ea;color:var(--ok)}.chip.cancelada{background:#eee;color:#777}.chip.asistio{background:var(--cielo);color:var(--azul2)}
+.det{color:var(--gris);font-size:14px;margin:8px 0 10px;line-height:1.5}
+.acc{display:flex;gap:6px;flex-wrap:wrap}.acc .btn{padding:8px 12px;font-size:14px}
+.vacio{text-align:center;color:var(--gris);padding:30px 10px}
+.bq{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #e3e7ef}
+.drop{border:3px dashed #c9d6ea;border-radius:18px;padding:24px;text-align:center;color:var(--gris);cursor:pointer;background:#fff;transition:.2s}
+.drop.sobre{border-color:var(--azul2);background:var(--cielo)}
+.drop b{display:block;color:var(--azul);font-size:17px;margin-bottom:4px}
+.cola{margin-top:10px}.item-sub{background:#fff;border-radius:12px;padding:10px 12px;margin-top:6px;font-size:14px}
+.bar{height:8px;background:#eef2f8;border-radius:8px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--azul2),var(--barro));width:0;transition:width .2s}
+.media{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.media{grid-template-columns:repeat(4,1fr)}}
+.mi{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 18px rgba(13,43,85,.07)}
+.mi img,.mi video{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#000}
+.mi .p{padding:8px}.mi input{padding:7px 9px;font-size:13px;border-width:1px}.mi .acc{margin-top:6px}.mi .btn{padding:6px 10px;font-size:12px}
+.graf{display:flex;align-items:end;gap:5px;height:170px;margin-top:10px}
+.graf div{flex:1;background:linear-gradient(180deg,var(--azul2),var(--azul));border-radius:6px 6px 0 0;position:relative;min-height:3px;transition:height .6s}
+.graf span{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:11px;font-weight:700;color:var(--azul)}
+.ejes{display:flex;gap:5px;margin-top:4px}.ejes div{flex:1;text-align:center;font-size:10px;color:var(--gris)}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;z-index:99;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%}
+.toast.on{opacity:1}
+.creador{background:linear-gradient(160deg,#2a1a0d,#4a2c14);color:#fff}
+.creador label{color:#e8c9a8}.creador p{color:#e8c9a8;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form class="lbox" id="fLogin">
+    <img src="/img/icon-192.png" alt="Creare">
+    <h1>Panel Creare</h1>
+    <p>Reservas, cupos, fotos y videos de la app</p>
+    <label for="clave">Clave</label>
+    <input id="clave" type="password" autocomplete="current-password" required>
+    <label style="display:flex;gap:8px;align-items:center;font-weight:500"><input type="checkbox" id="ver" style="width:auto"> Mostrar clave</label>
+    <button class="btn az" style="width:100%;margin-top:12px" type="submit">Entrar</button>
+    <div class="err" id="lerr"></div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header>
+    <div><b>Cerámicas Creare <span class="rol" id="rolTag"></span></b><small id="hoyTxt"></small></div>
+    <button class="btn lt" id="salir" style="padding:8px 12px">Salir</button>
+  </header>
+  <nav id="nav">
+    <button data-tab="reservas" class="on">Reservas</button>
+    <button data-tab="cupos">Cupos y cierres</button>
+    <button data-tab="media">Fotos y videos</button>
+    <button data-tab="visitas">Visitas</button>
+    <button data-tab="creador" id="tabCreador" hidden>Creador</button>
+  </nav>
+  <main>
+    <!-- RESERVAS -->
+    <section class="tab on" id="t-reservas">
+      <div class="stats">
+        <div class="stat"><b id="sHoy">0</b><small>personas hoy</small></div>
+        <div class="stat"><b id="sPend">0</b><small>por confirmar</small></div>
+        <div class="stat"><b id="sTot">0</b><small>reservas próximas</small></div>
+      </div>
+      <div class="card row">
+        <div><label>Desde</label><input type="date" id="rDesde"></div>
+        <div><label>Mostrar</label><select id="rDias"><option value="7">7 días</option><option value="14" selected>14 días</option><option value="31">1 mes</option><option value="62">2 meses</option></select></div>
+        <div><label>Estado</label><select id="rEst"><option value="">Todas</option><option value="pendiente">Por confirmar</option><option value="confirmada">Confirmadas</option><option value="asistio">Asistieron</option><option value="cancelada">Canceladas</option></select></div>
+        <button class="btn az" id="rVer" style="flex:0 0 auto">Actualizar</button>
+      </div>
+      <div id="rLista"></div>
+    </section>
+
+    <!-- CUPOS -->
+    <section class="tab" id="t-cupos">
+      <div class="card">
+        <h3 style="color:var(--azul)">Cupos por jornada</h3>
+        <p class="det" style="margin:4px 0 0">Cuántas personas caben en la mañana (turnos de 10 y 11 a. m.) y en la tarde (2 y 3 p. m.). La app no deja reservar más de esto.</p>
+        <div class="row">
+          <div><label>Mañana</label><input type="number" id="cM" min="0" max="200"></div>
+          <div><label>Tarde</label><input type="number" id="cT" min="0" max="200"></div>
+          <button class="btn az" id="cGuardar" style="flex:0 0 auto">Guardar</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--azul)">Cerrar un día o una jornada</h3>
+        <p class="det" style="margin:4px 0 0">Para festivos, mantenimiento o grupos privados. Ese día no se podrá reservar.</p>
+        <div class="row">
+          <div><label>Fecha</label><input type="date" id="bF"></div>
+          <div><label>Qué se cierra</label><select id="bJ"><option value="todo">Todo el día</option><option value="manana">Solo la mañana</option><option value="tarde">Solo la tarde</option></select></div>
+        </div>
+        <label>Motivo (lo ve el cliente)</label><input id="bM" placeholder="Ej: Grupo privado, festivo">
+        <button class="btn az" id="bAdd" style="margin-top:10px;width:100%">Cerrar</button>
+        <div id="bLista" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--azul)">Cómo va un día</h3>
+        <div class="row"><div><label>Fecha</label><input type="date" id="dF"></div><button class="btn lt" id="dVer" style="flex:0 0 auto">Ver</button></div>
+        <div id="dRes" class="det"></div>
+      </div>
+    </section>
+
+    <!-- MEDIA -->
+    <section class="tab" id="t-media">
+      <div class="card">
+        <h3 style="color:var(--azul)">Subir fotos y videos</h3>
+        <p class="det" style="margin:4px 0 10px">Salen en la app en la sección "Hecho en Creare". Las fotos se ajustan solas de tamaño; los videos pueden pesar hasta unos 160 MB.</p>
+        <label>Título (opcional, para todos los que suba ahora)</label><input id="mTit" placeholder="Ej: Grupo del sábado, Taza de girasoles">
+        <div class="drop" id="drop" style="margin-top:12px"><b>Tocar para elegir fotos o videos</b>o arrastrarlos aquí<input type="file" id="mFile" accept="image/*,video/*" multiple hidden></div>
+        <div class="cola" id="cola"></div>
+      </div>
+      <div class="media" id="mLista"></div>
+    </section>
+
+    <!-- VISITAS -->
+    <section class="tab" id="t-visitas">
+      <div class="stats">
+        <div class="stat"><b id="vHoy">0</b><small>visitas hoy</small></div>
+        <div class="stat"><b id="v7">0</b><small>últimos 7 días</small></div>
+        <div class="stat"><b id="v14">0</b><small>últimos 14 días</small></div>
+      </div>
+      <div class="card"><h3 style="color:var(--azul)">Visitas a la app por día</h3><div class="graf" id="graf"></div><div class="ejes" id="ejes"></div></div>
+    </section>
+
+    <!-- CREADOR -->
+    <section class="tab" id="t-creador">
+      <div class="card creador">
+        <h3>Modo creador · Vibras Positivas HM</h3>
+        <p style="margin-top:6px">Esta pestaña solo aparece con la clave del creador. Desde aquí se le pone una clave nueva a la dueña si la olvida, o se vuelve a la clave original.</p>
+        <label>Nueva clave para la dueña</label><input id="nClave" type="text" autocomplete="off" placeholder="Mínimo 6 caracteres">
+        <div class="row" style="margin-top:10px">
+          <button class="btn okb" id="nGuardar">Cambiar clave de la dueña</button>
+          <button class="btn lt" id="nRest">Volver a la clave original</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const cop=n=>'$'+Number(n||0).toLocaleString('es-CO');
+const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HORAS={'10:00':'10:00 a. m.','11:00':'11:00 a. m.','14:00':'2:00 p. m.','15:00':'3:00 p. m.'};
+const ESTADOS={pendiente:'Por confirmar',confirmada:'Confirmada',asistio:'Asistió',cancelada:'Cancelada'};
+let CLAVE=sessionStorage.getItem('creare-clave')||'', ROL='', HOY='';
+
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
+const may=t=>t.charAt(0).toUpperCase()+t.slice(1);
+const fLarga=f=>new Intl.DateTimeFormat('es-CO',{weekday:'long',day:'numeric',month:'long',timeZone:'America/Bogota'}).format(new Date(f+'T12:00:00-05:00'));
+async function api(accion,datos={}){
+  const r=await fetch('/api/admin',{method:'POST',headers:{'content-type':'application/json','x-clave':CLAVE},body:JSON.stringify({accion,...datos})});
+  const d=await r.json().catch(()=>({error:'Error de conexión'}));
+  if(r.status===401){salir();throw new Error('Clave incorrecta')}
+  if(!r.ok)throw new Error(d.error||'Error');
+  return d;
+}
+
+// ---------- entrar / salir
+$('#ver').onchange=e=>$('#clave').type=e.target.checked?'text':'password';
+$('#fLogin').onsubmit=async e=>{e.preventDefault();CLAVE=$('#clave').value.trim();$('#lerr').textContent='';
+  try{await entrar()}catch(err){$('#lerr').textContent='Clave incorrecta. Revísela e intente de nuevo.'}};
+async function entrar(){
+  const d=await api('entrar');ROL=d.rol;HOY=d.hoy;sessionStorage.setItem('creare-clave',CLAVE);
+  $('#login').hidden=true;$('#app').hidden=false;
+  $('#rolTag').textContent=ROL==='creador'?'Creador':'Dueña';$('#tabCreador').hidden=ROL!=='creador';
+  $('#hoyTxt').textContent='Hoy: '+fLarga(HOY);
+  $('#rDesde').value=HOY;$('#dF').value=HOY;$('#bF').min=HOY;$('#bF').value=HOY;
+  cargarReservas();
+}
+function salir(){sessionStorage.removeItem('creare-clave');CLAVE='';$('#app').hidden=true;$('#login').hidden=false;$('#clave').value=''}
+$('#salir').onclick=salir;
+
+// ---------- pestañas
+$$('#nav button').forEach(b=>b.onclick=()=>{$$('#nav button').forEach(x=>x.classList.toggle('on',x===b));$$('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.tab));
+  ({reservas:cargarReservas,cupos:cargarCupos,media:cargarMedia,visitas:cargarVisitas})[b.dataset.tab]?.()});
+
+// ---------- reservas
+let RES=[];
+async function cargarReservas(){
+  $('#rLista').innerHTML='<div class="vacio">Cargando reservas…</div>';
+  try{RES=(await api('reservas',{desde:$('#rDesde').value,dias:$('#rDias').value})).reservas}catch(e){$('#rLista').innerHTML=`<div class="vacio">${esc(e.message)}</div>`;return}
+  const act=RES.filter(r=>r.estado!=='cancelada');
+  $('#sHoy').textContent=act.filter(r=>r.fecha===HOY).reduce((a,r)=>a+r.personas,0);
+  $('#sPend').textContent=act.filter(r=>r.estado==='pendiente').length;
+  $('#sTot').textContent=act.length;
+  pintarReservas();
+}
+function pintarReservas(){
+  const f=$('#rEst').value, lista=RES.filter(r=>!f||r.estado===f);
+  if(!lista.length){$('#rLista').innerHTML='<div class="vacio">No hay reservas en estas fechas.</div>';return}
+  let html='',dia='';
+  for(const r of lista){
+    if(r.fecha!==dia){dia=r.fecha;const per=RES.filter(x=>x.fecha===dia&&x.estado!=='cancelada').reduce((a,x)=>a+x.personas,0);html+=`<div class="dia">${may(fLarga(dia))} · ${per} personas</div>`}
+    const wa=`https://wa.me/57${String(r.celular).slice(-10)}?text=${encodeURIComponent(`Hola ${r.nombre}, te escribimos de Cerámicas Creare por tu reserva ${r.id} del ${fLarga(r.fecha)} a las ${HORAS[r.turno]} (${r.personas} personas, ${r.nombreExperiencia}).`)}`;
+    html+=`<div class="card res ${r.estado}"><div class="top"><div><div class="cod">${r.id}</div><h3>${esc(r.nombre)}</h3></div><span class="chip ${r.estado}">${ESTADOS[r.estado]}</span></div>
+      <div class="det">${HORAS[r.turno]} · Experiencia ${r.experiencia} (${esc(r.nombreExperiencia)})<br>${r.personas} personas · ${cop(r.total)}<br>Celular: ${esc(r.celular)}${r.ocasion?`<br>Ocasión: ${esc(r.ocasion)}`:''}${r.idioma==='en'?'<br>Reservó en inglés':''}</div>
+      <div class="acc">
+        ${r.estado!=='confirmada'?`<button class="btn okb" onclick="estado('${r.fecha}','${r.id}','confirmada')">Confirmar</button>`:''}
+        ${r.estado==='confirmada'?`<button class="btn lt" onclick="estado('${r.fecha}','${r.id}','asistio')">Asistió</button>`:''}
+        <a class="btn wa" href="${wa}" target="_blank" rel="noopener" style="text-decoration:none">WhatsApp</a>
+        ${r.estado!=='cancelada'?`<button class="btn malb" onclick="if(confirm('¿Cancelar la reserva ${r.id}? Se liberan sus cupos.'))estado('${r.fecha}','${r.id}','cancelada')">Cancelar</button>`:`<button class="btn lt" onclick="estado('${r.fecha}','${r.id}','pendiente')">Reactivar</button>`}
+      </div></div>`;
+  }
+  $('#rLista').innerHTML=html;
+}
+async function estado(fecha,id,est){try{await api('estado',{fecha,id,estado:est});toast('Reserva '+id+': '+ESTADOS[est]);cargarReservas()}catch(e){toast(e.message)}}
+$('#rVer').onclick=cargarReservas;$('#rEst').onchange=pintarReservas;$('#rDias').onchange=cargarReservas;$('#rDesde').onchange=cargarReservas;
+
+// ---------- cupos y cierres
+async function cargarCupos(){try{const c=await api('config');$('#cM').value=c.cupoManana;$('#cT').value=c.cupoTarde;pintarBloq(c.bloqueos)}catch(e){toast(e.message)}}
+const JOR={todo:'Todo el día',manana:'Mañana',tarde:'Tarde'};
+function pintarBloq(b){$('#bLista').innerHTML=b.length?b.map(x=>`<div class="bq"><div><b>${may(fLarga(x.fecha))}</b><div class="det" style="margin:2px 0 0">${JOR[x.jornada]}${x.motivo?' · '+esc(x.motivo):''}</div></div><button class="btn lt" onclick="abrir('${x.fecha}','${x.jornada}')">Abrir</button></div>`).join(''):'<div class="det">No hay días cerrados.</div>'}
+$('#cGuardar').onclick=async()=>{try{await api('guardarCupos',{cupoManana:$('#cM').value,cupoTarde:$('#cT').value});toast('Cupos guardados')}catch(e){toast(e.message)}};
+$('#bAdd').onclick=async()=>{if(!$('#bF').value)return toast('Elija la fecha');try{const c=await api('bloquear',{fecha:$('#bF').value,jornada:$('#bJ').value,motivo:$('#bM').value});$('#bM').value='';pintarBloq(c.bloqueos);toast('Listo, quedó cerrado')}catch(e){toast(e.message)}};
+async function abrir(fecha,jornada){try{const c=await api('desbloquear',{fecha,jornada});pintarBloq(c.bloqueos);toast('Se volvió a abrir')}catch(e){toast(e.message)}}
+$('#dVer').onclick=async()=>{try{const d=await api('dia',{fecha:$('#dF').value});
+  $('#dRes').innerHTML=Object.entries(d.turnos).map(([t,v])=>`${HORAS[t]}: <b>${v.libres}</b> cupos libres${v.razon==='cerrado'?' (cerrado)':v.razon?' ('+v.razon+')':''}`).join('<br>')+(d.motivo?'<br>Motivo: '+esc(d.motivo):'')}catch(e){toast(e.message)}};
+
+// ---------- fotos y videos
+const PARTE=4*1024*1024;
+async function cargarMedia(){try{const r=await fetch('/api/media',{cache:'no-store'});const d=await r.json();
+  $('#mLista').innerHTML=d.items.length?d.items.map(m=>`<div class="mi">${m.tipo==='video'?`<video src="${m.url}#t=0.5" muted playsinline preload="metadata" controls></video>`:`<img src="${m.url}" alt="" loading="lazy">`}
+   <div class="p"><input value="${esc(m.titulo)}" onchange="titulo('${m.id}',this.value)" placeholder="Título"><div class="acc"><button class="btn malb" onclick="borrar('${m.id}')">Borrar</button></div></div></div>`).join(''):'<div class="vacio" style="grid-column:1/-1">Todavía no hay fotos ni videos subidos.</div>'}catch(e){toast('No se pudo cargar la galería')}}
+async function titulo(id,t){try{const r=await fetch('/api/media?accion=titulo',{method:'POST',headers:{'content-type':'application/json','x-clave':CLAVE},body:JSON.stringify({id,titulo:t})});if(!r.ok)throw 0;toast('Título guardado')}catch(e){toast('No se pudo guardar')}}
+async function borrar(id){if(!confirm('¿Borrar este archivo de la app?'))return;const r=await fetch('/api/media?id='+id,{method:'DELETE',headers:{'x-clave':CLAVE}});toast(r.ok?'Borrado':'No se pudo borrar');cargarMedia()}
+function achicar(file){return new Promise((ok,mal)=>{const img=new Image();img.onload=()=>{const max=1600,k=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>b?ok(b):mal(),'image/jpeg',.85);URL.revokeObjectURL(img.src)};img.onerror=mal;img.src=URL.createObjectURL(file)})}
+async function subir(file){
+  const fila=document.createElement('div');fila.className='item-sub';fila.innerHTML=`<b>${esc(file.name)}</b> <span>preparando…</span><div class="bar"><i></i></div>`;$('#cola').prepend(fila);
+  const txt=fila.querySelector('span'),bar=fila.querySelector('i');
+  try{
+    let blob=file,mime=file.type;
+    if(mime.startsWith('image/')){blob=await achicar(file);mime='image/jpeg'}
+    else if(!/^video\/(mp4|quicktime|webm)$/.test(mime))throw new Error('Formato no permitido');
+    const partes=Math.max(1,Math.ceil(blob.size/PARTE));
+    const ini=await fetch('/api/media?accion=iniciar',{method:'POST',headers:{'content-type':'application/json','x-clave':CLAVE},body:JSON.stringify({mime,partes,titulo:$('#mTit').value})}).then(r=>r.json());
+    if(!ini.id)throw new Error(ini.error||'No se pudo iniciar');
+    for(let i=0;i<partes;i++){
+      let intentos=0,ok=false;
+      while(!ok&&intentos<3){intentos++;const r=await fetch(`/api/media?accion=parte&id=${ini.id}&i=${i}`,{method:'POST',headers:{'x-clave':CLAVE,'content-type':'application/octet-stream'},body:blob.slice(i*PARTE,(i+1)*PARTE)});ok=r.ok}
+      if(!ok)throw new Error('Se cortó la subida en la parte '+(i+1));
+      bar.style.width=Math.round((i+1)/partes*100)+'%';txt.textContent=`subiendo ${Math.round((i+1)/partes*100)}%`;
+    }
+    const fin=await fetch('/api/media?accion=cerrar',{method:'POST',headers:{'content-type':'application/json','x-clave':CLAVE},body:JSON.stringify({id:ini.id})}).then(r=>r.json());
+    if(!fin.ok)throw new Error(fin.error||'No se pudo terminar');
+    txt.textContent='listo, ya está en la app';txt.style.color='var(--ok)';
+  }catch(e){txt.textContent=e.message||'Error';txt.style.color='var(--mal)'}
+}
+async function subirVarios(files){for(const f of files)await subir(f);cargarMedia()}
+$('#drop').onclick=()=>$('#mFile').click();
+$('#mFile').onchange=e=>{subirVarios([...e.target.files]);e.target.value=''};
+['dragover','dragenter'].forEach(ev=>$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.add('sobre')}));
+['dragleave','drop'].forEach(ev=>$('#drop').addEventListener(ev,e=>{e.preventDefault();$('#drop').classList.remove('sobre')}));
+$('#drop').addEventListener('drop',e=>subirVarios([...e.dataTransfer.files]));
+
+// ---------- visitas
+async function cargarVisitas(){try{const {dias}=await api('visitas');const max=Math.max(1,...dias.map(d=>d.visitas));
+  $('#vHoy').textContent=dias.at(-1).visitas;$('#v7').textContent=dias.slice(-7).reduce((a,d)=>a+d.visitas,0);$('#v14').textContent=dias.reduce((a,d)=>a+d.visitas,0);
+  $('#graf').innerHTML=dias.map(d=>`<div style="height:0"><span>${d.visitas||''}</span></div>`).join('');
+  $('#ejes').innerHTML=dias.map(d=>`<div>${d.fecha.slice(8)}</div>`).join('');
+  requestAnimationFrame(()=>[...$('#graf').children].forEach((el,i)=>el.style.height=(dias[i].visitas/max*100)+'%'))}catch(e){toast(e.message)}}
+
+// ---------- creador
+$('#nGuardar').onclick=async()=>{try{await api('cambiarClaveDuena',{nueva:$('#nClave').value});toast('La dueña ya entra con la clave nueva');$('#nClave').value=''}catch(e){toast(e.message)}};
+$('#nRest').onclick=async()=>{if(!confirm('¿Volver a la clave original de la dueña?'))return;try{await api('restaurarClaveDuena');toast('Volvió la clave original')}catch(e){toast(e.message)}};
+
+if(CLAVE)entrar().catch(()=>salir());
+</script>
+</body>
+</html>

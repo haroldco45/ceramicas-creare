@@ -23,6 +23,7 @@
 <style>
 :root{--azul:#0d2b55;--azul2:#1c4f9c;--cielo:#e8f0fb;--loza:#fbf8f2;--barro:#b86b3c;--tinta:#1a2233;--gris:#5b6578}
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{font-family:Outfit,system-ui,sans-serif;background:var(--loza);color:var(--tinta);line-height:1.5;overflow-x:hidden}
 h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.15}
@@ -126,6 +127,16 @@ textarea{min-height:70px;resize:vertical}
 .total strong{font:700 30px Fraunces,Georgia,serif;transition:transform .2s}
 .total strong.pop{transform:scale(1.12)}
 .warn{font-size:13px;color:#ffd7b5;min-height:18px}
+
+.disp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.disp div{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 12px;font-size:13px;color:#c9d8f2}
+.disp b{display:block;font:700 18px Outfit,sans-serif;color:#fff}
+.disp .lleno b{color:#ffb4a0}.disp .pocos b{color:#ffd27a}.disp .bien b{color:#8ff0b0}
+.disp .cargando{grid-column:1/-1;text-align:center}
+.ok-res{margin-top:18px;background:#fff;color:var(--tinta);border-radius:20px;padding:22px;animation:up .5s both;position:relative}
+.ok-res h3{color:#1b8a4b;font-size:24px}.ok-res .cod{font:700 30px Fraunces,Georgia,serif;color:var(--azul);letter-spacing:2px;margin:6px 0}
+.ok-res ul{list-style:none;margin:10px 0 16px;color:var(--gris)}.ok-res li{padding:4px 0;border-bottom:1px dashed #e3e7ef}
+button[disabled]{opacity:.6}
 
 /* condiciones */
 .terms{display:grid;gap:12px;margin-top:22px}
@@ -265,20 +276,23 @@ footer a{color:#fff;font-weight:600}
 <section id="reservar">
   <div class="book">
     <span class="kicker" style="color:#ffc79e" data-t="k3">Reserva</span>
-    <h2 class="sec-t" data-t="t3">Arma tu reserva y envíala por WhatsApp</h2>
-    <p class="sec-p" data-t="p3">Llena los datos, mira el total al instante y te llega listo el mensaje para que Creare confirme la disponibilidad.</p>
+    <h2 class="sec-t" data-t="t3">Reserva y mira los cupos al instante</h2>
+    <p class="sec-p" data-t="p3">Elige la fecha y te mostramos cuántos cupos quedan en cada horario. Al reservar, tu cupo queda separado de una vez.</p>
     <form id="f" onsubmit="return enviar(event)">
       <div class="full"><label data-t="lx">Experiencia</label><div class="opts" id="opts"></div></div>
       <div><label data-t="ln">Nombre y apellido</label><input id="nom" required autocomplete="name"></div>
+      <div><label data-t="lc">Celular / WhatsApp</label><input id="cel" type="tel" inputmode="numeric" required autocomplete="tel" placeholder="300 123 4567"></div>
       <div><label data-t="lf">Fecha de interés</label><input id="fec" type="date" required></div>
       <div><label data-t="lh">Horario</label><select id="hor"></select></div>
       <div><label data-t="lp">Número de personas</label>
         <div class="stepper"><button type="button" onclick="per(-1)">−</button><input id="pers" type="number" min="2" max="35" value="2"><button type="button" onclick="per(1)">+</button></div></div>
       <div class="full"><label data-t="lo">Ocasión especial (cumpleaños, aniversario…)</label><input id="oca"></div>
       <div class="full total"><div><div data-t="tt" style="font-size:13px;color:#c9d8f2">Total estimado</div><strong id="tot">$0</strong></div><div id="desc" style="font-size:13px;color:#c9d8f2;text-align:right"></div></div>
+      <div class="full disp" id="disp"></div>
       <div class="full warn" id="warn"></div>
-      <button class="btn wa full" type="submit"><span class="wa-dot"></span><span data-t="send">Enviar reserva por WhatsApp</span></button>
+      <button class="btn wa full" type="submit" id="btnRes"><span class="wa-dot"></span><span data-t="send">Reservar mi cupo</span></button>
     </form>
+    <div class="ok-res" id="okRes" hidden></div>
   </div>
 </section>
 
@@ -351,16 +365,16 @@ footer a{color:#fff;font-weight:600}
 <script>
 const WA='573009464616';
 const EXP=[
- {id:1,p:85000,img:'img/estanteria.jpg',h:['11:00 a.m. – 1:00 p.m.','3:00 p.m. – 5:00 p.m.'],dur:2,w:'50%',
+ {id:1,p:85000,tk:['11:00','15:00'],img:'img/estanteria.jpg',h:['11:00 a.m. – 1:00 p.m.','3:00 p.m. – 5:00 p.m.'],dur:2,w:'50%',
   es:{n:'Pintar y disfrutar',tag:'',d:'Ideal si prefieres enfocarte solo en pintar.',inc:['Pintas 2 piezas de cerámica']},
   en:{n:'Paint & enjoy',tag:'',d:'Perfect if you just want to focus on painting.',inc:['Paint 2 ceramic pieces']}},
- {id:2,p:95000,img:'img/finca-izq.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'65%',
+ {id:2,p:95000,tk:['10:00','14:00'],img:'img/finca-izq.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'65%',
   es:{n:'Tour + 1 pieza',d:'Conoce el barro y pinta tu pieza.',inc:['1 hora de tour interactivo con el barro','2 horas para pintar 1 pieza de cerámica']},
   en:{n:'Tour + 1 piece',d:'Get to know the clay and paint your piece.',inc:['1-hour interactive clay tour','2 hours to paint 1 ceramic piece']}},
- {id:3,p:105000,img:'img/cumple.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'80%',
+ {id:3,p:105000,tk:['10:00','14:00'],img:'img/cumple.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'80%',
   es:{n:'Tour + 2 piezas',d:'El tour y el doble de piezas para llevar.',inc:['1 hora de tour interactivo con el barro','2 horas para pintar 2 piezas de cerámica']},
   en:{n:'Tour + 2 pieces',d:'The tour plus twice the pieces to take home.',inc:['1-hour interactive clay tour','2 hours to paint 2 ceramic pieces']}},
- {id:4,p:125000,img:'img/finca-der.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'100%',best:1,
+ {id:4,p:125000,tk:['10:00','14:00'],img:'img/finca-der.jpg',h:['10:00 a.m. – 1:00 p.m.','2:00 p.m. – 5:00 p.m.'],dur:3,w:'100%',best:1,
   es:{n:'Experiencia completa',d:'Nuestra opción más completa: tour, pintura y moldeado.',inc:['1 hora de tour','1 hora para pintar 1 pieza de cerámica','1 hora para moldear 1 pieza de arcilla (pellizco o placa)']},
   en:{n:'Full experience',d:'Our most complete option: tour, painting and shaping.',inc:['1-hour tour','1 hour to paint 1 ceramic piece','1 hour to shape 1 clay piece (pinch or slab technique)']}}
 ];
@@ -370,10 +384,10 @@ const TERMS={
 };
 const PZ=[['plato-arana.jpg','Araña entre hojas','Spider among leaves','Plato cuadrado · verde y coral','Square plate · green and coral'],['plato-orquidea.jpg','Orquídea','Orchid','Plato cuadrado · lila y amarillo','Square plate · lilac and yellow'],['plato-cohete.jpg','Un año de viaje interestelar','One year of interstellar travel','Plato redondo · cielo y fuego','Round plate · sky and fire'],['plato-alaia.jpg','Paisaje para Alaia','Landscape for Alaia','Plato con borde azul','Plate with blue rim'],['harold-taza.jpg','Taza Vibras Positivas','Vibras Positivas mug','Lunas y olas','Moons and waves']];
 const T={
- es:{chip:'El Carmen de Viboral · Antioquia',h1:'Ven a vivir el arte de la cerámica',hp:'Pinta tus propias piezas, toca el barro y moldea con tus manos en la finca Creare, en la cuna de la cerámica de Colombia.',b1:'Reservar ahora',b2:'Ver experiencias',b4:'Cómo llegar',b5:'En redes',b6:'Lo que crearon',k1:'4 experiencias',t1:'Elige cómo quieres crear',p1:'Desde solo pintar hasta la experiencia completa con tour, pintura y moldeado en arcilla. Precios por persona.',k2:'La finca',t2:'Así se vive Creare',g1:'Los corredores de la finca',g2:'Te esperamos en la entrada',g3:'Bienvenida a El Carmen',g4:'Celebraciones y cumpleaños',g5:'Piezas listas para pintar',g6:'Patio y jardín',g7:'Grupos y familias',k3:'Reserva',t3:'Arma tu reserva y envíala por WhatsApp',p3:'Llena los datos, mira el total al instante y te llega listo el mensaje para que Creare confirme la disponibilidad.',lx:'Experiencia',ln:'Nombre y apellido',lf:'Fecha de interés',lh:'Horario',lp:'Número de personas',lo:'Ocasión especial (cumpleaños, aniversario…)',tt:'Total estimado',send:'Enviar reserva por WhatsApp',k4:'Antes de ir',t4:'Términos y condiciones',tn:'Consulta el texto completo en el catálogo de WhatsApp de Creare:',tl:'ver términos',k5:'Tradición',t5:'En la cuna de la cerámica',p5:'La cerámica decorada a mano bajo esmalte de El Carmen de Viboral es Patrimonio Cultural Inmaterial de Colombia. En Creare la vives con tus propias manos: del barro a tu pieza pintada.',f1:'experiencias',f2:'personas por grupo',f3:'la más completa',b3:'Escribir a Creare',ft:'App hecha por',cl:'Cerrar',k6:'Ubicación',k8:'Hecho en Creare',t8:'Lo que crearon nuestros visitantes',p8:'Piezas reales pintadas en la finca el 16 de noviembre de 2026. Nadie llegó siendo artista y mire cómo quedaron.',v1:'Pulpo y tiburón ballena, en el torno',g8:'Con sus piezas recién pintadas',k7:'Al día',t7:'Creare en redes',p7:'Lo último que publica Creare, tal como sale en su Instagram. El robot revisa cada 30 minutos.',igd:'Fotos, reels y fechas de sus experiencias',act:'Actualizar',seg:'Seguir en Instagram',webT:'Creare en los medios',rob:'Robot revisó: ',vid:'Reel',t6:'Cómo llegar',p6:'La finca Creare queda en el sector Jardines de Campo Alegre, El Carmen de Viboral. Toca un lugar para verlo en el mapa y abre la ruta desde donde estés.',pl1:'Finca Creare · experiencias',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. Aquí se hacen el tour, la pintura y el moldeado.',pl2:'Tienda Creare · Paseo del Ángel',pd2:'Calle de las sombrillas, en el centro del pueblo. Para ver piezas y preguntar por las experiencias.',gm:'Ruta en Google Maps',wz:'Ir con Waze',
+ es:{chip:'El Carmen de Viboral · Antioquia',h1:'Ven a vivir el arte de la cerámica',hp:'Pinta tus propias piezas, toca el barro y moldea con tus manos en la finca Creare, en la cuna de la cerámica de Colombia.',b1:'Reservar ahora',b2:'Ver experiencias',b4:'Cómo llegar',b5:'En redes',b6:'Lo que crearon',k1:'4 experiencias',t1:'Elige cómo quieres crear',p1:'Desde solo pintar hasta la experiencia completa con tour, pintura y moldeado en arcilla. Precios por persona.',k2:'La finca',t2:'Así se vive Creare',g1:'Los corredores de la finca',g2:'Te esperamos en la entrada',g3:'Bienvenida a El Carmen',g4:'Celebraciones y cumpleaños',g5:'Piezas listas para pintar',g6:'Patio y jardín',g7:'Grupos y familias',k3:'Reserva',t3:'Reserva y mira los cupos al instante',p3:'Elige la fecha y te mostramos cuántos cupos quedan en cada horario. Al reservar, tu cupo queda separado de una vez.',lx:'Experiencia',lc:'Celular / WhatsApp',dispT:'Cupos para ese día',quedan:'cupos libres',lleno:'Sin cupos',cerrado:'Cerrado',pasada:'Ya pasó',horaP:'Ya empezó',consult:'Consultando cupos…',elige:'Elige una fecha para ver los cupos.',okT:'¡Hay disponibilidad! Tu cupo quedó separado',codT:'Código de tu reserva',okP:'Creare te escribe para confirmar el abono. También puedes enviarles tu reserva ya mismo:',waBtn:'Enviar mi reserva por WhatsApp',otra:'Hacer otra reserva',errRed:'No pudimos conectar. Revisa tu internet o escríbenos por WhatsApp.',celMal:'Escribe un celular válido de 10 dígitos.',ln:'Nombre y apellido',lf:'Fecha de interés',lh:'Horario',lp:'Número de personas',lo:'Ocasión especial (cumpleaños, aniversario…)',tt:'Total estimado',send:'Reservar mi cupo',k4:'Antes de ir',t4:'Términos y condiciones',tn:'Consulta el texto completo en el catálogo de WhatsApp de Creare:',tl:'ver términos',k5:'Tradición',t5:'En la cuna de la cerámica',p5:'La cerámica decorada a mano bajo esmalte de El Carmen de Viboral es Patrimonio Cultural Inmaterial de Colombia. En Creare la vives con tus propias manos: del barro a tu pieza pintada.',f1:'experiencias',f2:'personas por grupo',f3:'la más completa',b3:'Escribir a Creare',ft:'App hecha por',cl:'Cerrar',k6:'Ubicación',k8:'Hecho en Creare',t8:'Lo que crearon nuestros visitantes',p8:'Piezas reales pintadas en la finca el 16 de noviembre de 2026. Nadie llegó siendo artista y mire cómo quedaron.',v1:'Pulpo y tiburón ballena, en el torno',g8:'Con sus piezas recién pintadas',k7:'Al día',t7:'Creare en redes',p7:'Lo último que publica Creare, tal como sale en su Instagram. El robot revisa cada 30 minutos.',igd:'Fotos, reels y fechas de sus experiencias',act:'Actualizar',seg:'Seguir en Instagram',webT:'Creare en los medios',rob:'Robot revisó: ',vid:'Reel',t6:'Cómo llegar',p6:'La finca Creare queda en el sector Jardines de Campo Alegre, El Carmen de Viboral. Toca un lugar para verlo en el mapa y abre la ruta desde donde estés.',pl1:'Finca Creare · experiencias',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. Aquí se hacen el tour, la pintura y el moldeado.',pl2:'Tienda Creare · Paseo del Ángel',pd2:'Calle de las sombrillas, en el centro del pueblo. Para ver piezas y preguntar por las experiencias.',gm:'Ruta en Google Maps',wz:'Ir con Waze',
   per:'por persona',hrs:'horas',pick:'Elegir',best:'Más completa',exp:'Experiencia',min:'Mínimo 2 y máximo 35 personas.',nodate:'Elige una fecha que no haya pasado.',pp:'personas',hora:'Hora de Colombia: ',
   rib:['<b>Exp. 1</b> $85.000 · pinta 2 piezas','<b>Exp. 2</b> $95.000 · tour + 1 pieza','<b>Exp. 3</b> $105.000 · tour + 2 piezas','<b>Exp. 4</b> $125.000 · tour, pintura y arcilla','Grupos de 2 a 35 personas','Cumpleaños y aniversarios']},
- en:{chip:'El Carmen de Viboral · Colombia',h1:'Come live the art of ceramics',hp:'Paint your own pieces, feel the clay and shape it with your hands at Finca Creare, in the cradle of Colombian ceramics.',b1:'Book now',b2:'See experiences',b4:'How to get there',b5:'On social',b6:'What they made',k1:'4 experiences',t1:'Choose how you want to create',p1:'From painting only to the full experience with tour, painting and clay shaping. Prices per person (COP).',k2:'The farm',t2:'This is Creare',g1:'The farm corridors',g2:'We welcome you at the entrance',g3:'Welcome to El Carmen',g4:'Celebrations & birthdays',g5:'Pieces ready to paint',g6:'Patio & garden',g7:'Groups & families',k3:'Booking',t3:'Build your booking and send it on WhatsApp',p3:'Fill in the details, see the total instantly and get a ready-made message so Creare can confirm availability.',lx:'Experience',ln:'Full name',lf:'Preferred date',lh:'Time slot',lp:'Number of people',lo:'Special occasion (birthday, anniversary…)',tt:'Estimated total (COP)',send:'Send booking via WhatsApp',k4:'Before you go',t4:'Terms & conditions',tn:'See the full text in Creare’s WhatsApp catalog:',tl:'view terms',k5:'Tradition',t5:'In the cradle of ceramics',p5:'Hand-decorated underglaze ceramics from El Carmen de Viboral are part of Colombia’s Intangible Cultural Heritage. At Creare you live it with your own hands: from clay to your painted piece.',f1:'experiences',f2:'people per group',f3:'longest option',b3:'Message Creare',ft:'App by',cl:'Close',k6:'Location',k8:'Made at Creare',t8:'What our visitors created',p8:'Real pieces painted at the farm on November 16, 2026. Nobody arrived as an artist, and look how they turned out.',v1:'Octopus and whale shark, on the wheel',g8:'With their freshly painted pieces',k7:'Up to date',t7:'Creare on social media',p7:'Creare’s latest posts, just as they appear on Instagram. The robot checks every 30 minutes.',igd:'Photos, reels and experience dates',act:'Refresh',seg:'Follow on Instagram',webT:'Creare in the media',rob:'Robot checked: ',vid:'Reel',t6:'How to get there',p6:'Finca Creare is in the Jardines de Campo Alegre area of El Carmen de Viboral. Tap a place to see it on the map and open directions from wherever you are.',pl1:'Finca Creare · experiences',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. The tour, painting and clay shaping happen here.',pl2:'Creare shop · Paseo del Ángel',pd2:'Calle de las sombrillas, in the town centre. See pieces and ask about the experiences.',gm:'Directions in Google Maps',wz:'Go with Waze',
+ en:{chip:'El Carmen de Viboral · Colombia',h1:'Come live the art of ceramics',hp:'Paint your own pieces, feel the clay and shape it with your hands at Finca Creare, in the cradle of Colombian ceramics.',b1:'Book now',b2:'See experiences',b4:'How to get there',b5:'On social',b6:'What they made',k1:'4 experiences',t1:'Choose how you want to create',p1:'From painting only to the full experience with tour, painting and clay shaping. Prices per person (COP).',k2:'The farm',t2:'This is Creare',g1:'The farm corridors',g2:'We welcome you at the entrance',g3:'Welcome to El Carmen',g4:'Celebrations & birthdays',g5:'Pieces ready to paint',g6:'Patio & garden',g7:'Groups & families',k3:'Booking',t3:'Book and see available spots instantly',p3:'Pick a date and we show how many spots are left in each time slot. When you book, your spot is held right away.',lx:'Experience',lc:'Mobile / WhatsApp',dispT:'Spots for that day',quedan:'spots left',lleno:'Full',cerrado:'Closed',pasada:'Past date',horaP:'Already started',consult:'Checking spots…',elige:'Pick a date to see available spots.',okT:'Spots available! Your booking is held',codT:'Your booking code',okP:'Creare will message you to confirm the deposit. You can also send them your booking right now:',waBtn:'Send my booking on WhatsApp',otra:'Make another booking',errRed:'We could not connect. Check your internet or message us on WhatsApp.',celMal:'Enter a valid 10-digit mobile number.',ln:'Full name',lf:'Preferred date',lh:'Time slot',lp:'Number of people',lo:'Special occasion (birthday, anniversary…)',tt:'Estimated total (COP)',send:'Book my spot',k4:'Before you go',t4:'Terms & conditions',tn:'See the full text in Creare’s WhatsApp catalog:',tl:'view terms',k5:'Tradition',t5:'In the cradle of ceramics',p5:'Hand-decorated underglaze ceramics from El Carmen de Viboral are part of Colombia’s Intangible Cultural Heritage. At Creare you live it with your own hands: from clay to your painted piece.',f1:'experiences',f2:'people per group',f3:'longest option',b3:'Message Creare',ft:'App by',cl:'Close',k6:'Location',k8:'Made at Creare',t8:'What our visitors created',p8:'Real pieces painted at the farm on November 16, 2026. Nobody arrived as an artist, and look how they turned out.',v1:'Octopus and whale shark, on the wheel',g8:'With their freshly painted pieces',k7:'Up to date',t7:'Creare on social media',p7:'Creare’s latest posts, just as they appear on Instagram. The robot checks every 30 minutes.',igd:'Photos, reels and experience dates',act:'Refresh',seg:'Follow on Instagram',webT:'Creare in the media',rob:'Robot checked: ',vid:'Reel',t6:'How to get there',p6:'Finca Creare is in the Jardines de Campo Alegre area of El Carmen de Viboral. Tap a place to see it on the map and open directions from wherever you are.',pl1:'Finca Creare · experiences',pd1:'Jardines de Campo Alegre, El Carmen de Viboral. The tour, painting and clay shaping happen here.',pl2:'Creare shop · Paseo del Ángel',pd2:'Calle de las sombrillas, in the town centre. See pieces and ask about the experiences.',gm:'Directions in Google Maps',wz:'Go with Waze',
   per:'per person',hrs:'hours',pick:'Choose',best:'Most complete',exp:'Experience',min:'Minimum 2 and maximum 35 people.',nodate:'Pick a date that hasn’t passed.',pp:'people',hora:'Colombia time: ',
   rib:['<b>Exp. 1</b> COP 85,000 · paint 2 pieces','<b>Exp. 2</b> COP 95,000 · tour + 1 piece','<b>Exp. 3</b> COP 105,000 · tour + 2 pieces','<b>Exp. 4</b> COP 125,000 · tour, paint & clay','Groups of 2 to 35','Birthdays & anniversaries']}
 };
@@ -400,7 +414,22 @@ function render(){
   horarios(); calc(); observar();
 }
 function pick(id){sel=id; document.querySelectorAll('.opt').forEach((o,i)=>o.classList.toggle('on',EXP[i].id===id)); horarios(); calc()}
-function horarios(){const x=EXP.find(e=>e.id===sel); $('#hor').innerHTML=x.h.map(h=>`<option>${h}</option>`).join('')}
+let DISP=null;
+function horarios(){const x=EXP.find(e=>e.id===sel);const prev=$('#hor').value;
+  $('#hor').innerHTML=x.h.map((h,i)=>{const t=DISP&&DISP.turnos[x.tk[i]];const n=t?t.libres:null;
+    const tag=n===null?'':(n>0?` · ${n} ${T[L].quedan}`:` · ${t.razon==='cerrado'?T[L].cerrado:T[L].lleno}`);
+    return `<option value="${x.tk[i]}" ${n===0?'disabled':''}>${h}${tag}</option>`}).join('');
+  const op=[...$('#hor').options];const keep=op.find(o=>o.value===prev&&!o.disabled)||op.find(o=>!o.disabled);if(keep)$('#hor').value=keep.value;
+  pintarDisp()}
+function pintarDisp(){const el=$('#disp');const x=EXP.find(e=>e.id===sel);
+  if(!$('#fec').value){el.innerHTML=`<div class="cargando">${T[L].elige}</div>`;return}
+  if(!DISP){el.innerHTML=`<div class="cargando">${T[L].consult}</div>`;return}
+  el.innerHTML=x.h.map((h,i)=>{const t=DISP.turnos[x.tk[i]],n=t.libres;
+    const cls=n===0?'lleno':(n<8?'pocos':'bien');const txt=n>0?`${n} ${T[L].quedan}`:({cerrado:T[L].cerrado,pasada:T[L].pasada,hora:T[L].horaP}[t.razon]||T[L].lleno);
+    return `<div class="${cls}">${h.split('–')[0].trim()}<b>${txt}</b></div>`}).join('')+(DISP.motivo?`<div class="cargando">${esc(DISP.motivo)}</div>`:'')}
+async function consultar(){const f=$('#fec').value;DISP=null;horarios();if(!f)return;
+  try{const r=await fetch('/api/reservas?fecha='+f,{cache:'no-store'});const d=await r.json();if(r.ok&&$('#fec').value===f)DISP=d}catch(e){$('#disp').innerHTML=`<div class="cargando">${T[L].errRed}</div>`;return}
+  horarios()}
 function per(d){const i=$('#pers'); i.value=Math.min(35,Math.max(2,(+i.value||2)+d)); calc()}
 function calc(){
   const x=EXP.find(e=>e.id===sel), n=+$('#pers').value||0, t=$('#tot');
@@ -412,24 +441,40 @@ function calc(){
 function hoyCO(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota'}).format(new Date())}
 function diaSemana(f){const d=new Date(f+'T12:00:00-05:00');return new Intl.DateTimeFormat('es-CO',{weekday:'long',timeZone:'America/Bogota'}).format(d)}
 function fechaLarga(f){const d=new Date(f+'T12:00:00-05:00');return new Intl.DateTimeFormat('es-CO',{day:'numeric',month:'long',year:'numeric',timeZone:'America/Bogota'}).format(d)}
-function enviar(e){
+async function enviar(e){
   e.preventDefault();
-  const n=+$('#pers').value, f=$('#fec').value;
+  const n=+$('#pers').value, f=$('#fec').value, cel=$('#cel').value.replace(/\D/g,'');
   if(n<2||n>35){$('#warn').textContent=T[L].min;return false}
   if(!f||f<hoyCO()){$('#warn').textContent=T[L].nodate;return false}
-  const x=EXP.find(e=>e.id===sel);
-  const msg=`Hola Cerámicas Creare, quiero reservar:\n\n`+
-   `- *Nombre y apellido:* ${$('#nom').value.trim()}\n`+
+  if(cel.length<10){$('#warn').textContent=T[L].celMal;return false}
+  const x=EXP.find(e=>e.id===sel), btn=$('#btnRes');btn.disabled=true;$('#warn').textContent=T[L].consult;
+  let d;
+  try{const r=await fetch('/api/reservas',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({experiencia:sel,fecha:f,turno:$('#hor').value,personas:n,nombre:$('#nom').value,celular:cel,ocasion:$('#oca').value,idioma:L})});d=await r.json()}
+  catch(err){btn.disabled=false;$('#warn').textContent=T[L].errRed;return false}
+  btn.disabled=false;
+  if(!d.ok){$('#warn').textContent=d.mensaje||d.error||T[L].errRed;consultar();return false}
+  $('#warn').textContent='';const r=d.reserva;const hTxt=x.h[x.tk.indexOf(r.turno)];
+  const msg=`Hola Cerámicas Creare, hice una reserva en la app:\n\n`+
+   `- *Código:* ${r.id}\n`+
+   `- *Nombre y apellido:* ${r.nombre}\n`+
+   `- *Celular:* ${r.celular}\n`+
    `- *Día:* ${diaSemana(f)}\n`+
-   `- *Fecha de interés:* ${fechaLarga(f)}\n`+
+   `- *Fecha:* ${fechaLarga(f)}\n`+
    `- *Experiencia:* ${x.id} (${x.es.n}) - ${cop(x.p)} por persona\n`+
-   `- *Horario:* ${$('#hor').value}\n`+
+   `- *Horario:* ${hTxt}\n`+
    `- *Número de personas:* ${n}\n`+
-   `- *Ocasión especial:* ${$('#oca').value.trim()||'Ninguna'}\n\n`+
-   `Total estimado: ${cop(x.p*n)}\n(Enviado desde la app de Creare)`;
-  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(msg),'_blank');
+   `- *Ocasión especial:* ${r.ocasion||'Ninguna'}\n\n`+
+   `Total estimado: ${cop(r.total)}\nQuedo atento(a) para el abono.`;
+  $('#f').hidden=true;const ok=$('#okRes');ok.hidden=false;
+  ok.innerHTML=`<h3>${T[L].okT}</h3><div style="font-size:13px;color:var(--gris);margin-top:10px">${T[L].codT}</div><div class="cod">${r.id}</div>
+   <ul><li>${esc(r.nombre)} · ${n} ${T[L].pp}</li><li>${diaSemana(f)} ${fechaLarga(f)} · ${hTxt}</li><li>${T[L].exp} ${x.id} · ${x[L].n} · ${cop(r.total)}</li></ul>
+   <p style="color:var(--gris);margin-bottom:12px">${T[L].okP}</p>
+   <a class="btn wa" style="width:100%" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent(msg)}"><span class="wa-dot"></span>${T[L].waBtn}</a>
+   <button class="btn lt" type="button" style="width:100%;margin-top:8px;border:2px solid var(--cielo)" onclick="otraReserva()">${T[L].otra}</button>`;
+  ok.scrollIntoView({behavior:'smooth',block:'center'});
   return false;
 }
+function otraReserva(){$('#okRes').hidden=true;$('#f').hidden=false;$('#f').reset();$('#pers').value=2;DISP=null;horarios();calc()}
 let io;
 function observar(){
   io&&io.disconnect();
@@ -441,6 +486,7 @@ function reloj(){$('#hora').textContent=T[L].hora+new Intl.DateTimeFormat(L==='e
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{L=b.dataset.l;localStorage.setItem('creare-lang',L);render();reloj()});
 $('#pers').addEventListener('input',calc);
 $('#fec').min=hoyCO();
+$('#fec').addEventListener('change',consultar);
 addEventListener('scroll',()=>$('#top').classList.toggle('solid',scrollY>60),{passive:true});
 document.querySelectorAll('.gal figure').forEach(f=>f.onclick=()=>{$('#lbi').src=f.querySelector('img').src;$('#lb').classList.add('on')});
 document.querySelectorAll('.place').forEach(pl=>pl.addEventListener('click',e=>{if(e.target.closest('a'))return;document.querySelectorAll('.place').forEach(x=>x.classList.remove('on'));pl.classList.add('on');$('#mapa').src='https://maps.google.com/maps?q='+pl.dataset.ll+'&z=16&output=embed'}));
@@ -461,7 +507,16 @@ function pintarRedes(){
 }
 $('#btnAct').onclick=()=>{const f=$('#igPerfil');f.src=f.src.split('?')[0]+'?t='+Date.now();cargarRedes(true)};
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',pintarRedes));
-render(); reloj(); cargarRedes(true); setInterval(reloj,30000);
+let MEDIA=[];
+async function cargarMedia(){try{const r=await fetch('/api/media',{cache:'no-store'});if(r.ok)MEDIA=(await r.json()).items||[]}catch(e){}pintarMedia()}
+function pintarMedia(){document.querySelectorAll('.pz.dyn').forEach(e=>e.remove());const cont=$('#piezas');
+  MEDIA.slice().reverse().forEach(m=>{const d=document.createElement('div');d.className='pz dyn';
+    d.innerHTML=(m.tipo==='video'?`<video src="${m.url}#t=0.5" muted loop playsinline preload="metadata" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#000"></video>`:`<img src="${m.url}" alt="" loading="lazy">`)+`<b>${esc(m.titulo)||'Creare'}</b><small>${fh(m.creado)}</small>`;
+    if(m.tipo==='video'){const v=d.querySelector('video');d.onclick=()=>{v.paused?v.play():v.pause()}}else d.onclick=()=>{$('#lbi').src=m.url;$('#lb').classList.add('on')};
+    cont.prepend(d)})}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>{pintarMedia();horarios()}));
+try{if(!sessionStorage.getItem('creare-v')){sessionStorage.setItem('creare-v','1');fetch('/api/visita',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idioma:L,origen:document.referrer?new URL(document.referrer).hostname:''})}).catch(()=>{})}}catch(e){}
+render(); reloj(); cargarRedes(true); cargarMedia(); setInterval(reloj,30000);
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
